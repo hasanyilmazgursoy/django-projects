@@ -7,5 +7,7 @@ urlpatterns = [
     path('index', views.index, name='index'),  # /products/index adresi de aynı şekilde index fonksiyonuna gider
     path('details', views.details, name='details'),  # /products/details adresi details fonksiyonunu çağırır
     path('list', views.list, name='list'),  # /products/list adresi list fonksiyonunu çağırır
-    path('<category>', views.getproductByCategory),  # /products/<category> şeklinde dinamik kategori URL'si
+    path('<int:category>', views.getproductByCategoryId),
+    path('<str:category>', views.getproductByCategory),  # /products/<category> şeklinde dinamik kategori URL'si
+      # /products/<category> şeklinde dinamik kategori URL'si
 ]

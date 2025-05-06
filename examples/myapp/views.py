@@ -12,6 +12,9 @@ def details(request):
 def list(request):
     return HttpResponse("list")
 
+def getproductByCategoryId(request, category):
+    return HttpResponse(category)  # URL'den gelen kategori ID'sini döndürür
+
 # /products/<category> çağrıldığında çalışan dinamik fonksiyon
 def getproductByCategory(request, category):  # URL'den gelen kategori bilgisi alınır
     category_text = None  # Başlangıçta boş tanımlanır
