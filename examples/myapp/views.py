@@ -1,36 +1,44 @@
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound  # HTML veya düz metin cevap döndürmek için
-from django.shortcuts import redirect  # Kullanıcıyı başka bir sayfaya yönlendirmek için
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound  # HTTP cevapları için gerekli sınıflar
+from django.shortcuts import redirect  # Kullanıcıyı başka bir URL'ye yönlendirmek için
+from django.urls import reverse  # URL'leri name parametresine göre dinamik oluşturmak için
 
-# Kategorilere ait verilerin tanımlandığı sözlük
+# Kategorilere ait verileri tutan sözlük (kategori ismi => açıklama)
 data = {
-    "telefon": "telefon kategorisindeki ürünler",  # Telefon kategorisindeki ürün açıklaması
-    "bilgisayar": "bilgisayar kategorisindeki ürünler",  # Bilgisayar kategorisindeki ürün açıklaması
-    "elektronik": "elektronik kategorisindeki ürünler",  # Elektronik kategorisindeki ürün açıklaması
+    "telefon": "telefon kategorisindeki ürünler",
+    "bilgisayar": "bilgisayar kategorisindeki ürünler",
+    "elektronik": "elektronik kategorisindeki ürünler",
 }
 
-# Kategoriler listesi (şu anda kullanılmıyor, veriler `data` sözlüğünden alınıyor)
-["telefon", "bilgisayar", "elektronik"]  # Kategoriler listesi
+# Not: Alttaki liste şu an kullanılmıyor, sadece örnek amaçlı orada
+["telefon", "bilgisayar", "elektronik"]
 
-# /products/ veya /products/index çağrıldığında çalışan fonksiyon
+# /products/ veya /products/index adresine istek gelince çalışacak olan fonksiyon
 def index(request):
-    return HttpResponse("index")  # Basit bir yanıt döner: "index"
+    return HttpResponse("index")  # Tarayıcıya "index" yazısı gönderilir
 
-# /products/details çağrıldığında çalışan fonksiyon
+# /products/details adresine istek gelince çalışır
 def details(request):
-    return HttpResponse("details")  # Basit bir yanıt döner: "details"
+    return HttpResponse("details")  # Tarayıcıya "details" yazısı gönderilir
 
-# Kategori ID'sine göre yönlendirme yapan fonksiyon
+# /products/<int:category_id> şeklinde gelen istekte çalışır
+# Sayısal ID'ye göre doğru kategoriye yönlendirir
 def getproductByCategoryId(request, category_id):
-    category_list = list(data.keys())  # data sözlüğündeki anahtarları (kategori isimlerini) bir listeye dönüştür
-    if category_id > len(category_list):  # Eğer kategori numarası geçerli değilse
-        return HttpResponseNotFound("yanlış kategori seçimi yaptınız")  # 404 hata mesajı döndür
-    redirect_text = category_list[category_id-1]  # Kategori sırasına göre doğru kategori ismini al
-    return redirect("/products/" + redirect_text)  # Kullanıcıyı doğru kategoriye yönlendir
+    category_list = list(data.keys())  # Kategori isimlerini listeye çeviriyoruz (örn: ['telefon', 'bilgisayar', 'elektronik'])
 
-# /products/<category> şeklinde dinamik kategori URL'siyle çağrıldığında çalışan fonksiyon
-def getproductByCategory(request, category):  # URL'den gelen kategori bilgisi alınır
+    if category_id > len(category_list) or category_id < 1:
+        return HttpResponseNotFound("yanlış kategori seçimi yaptınız")  # Geçersiz ID girildiyse hata döner
+
+    category_name = category_list[category_id - 1]  # ID ile doğru kategori ismi eşleştirilir (1-indexli gibi çalışıyor)
+
+    redirect_path = reverse('products_by_category', args=[category_name])  # İlgili kategori için URL'yi dinamik oluştur
+
+    return redirect(redirect_path)  # Kullanıcıyı o URL'ye yönlendir
+
+# /products/<str:category> şeklinde gelen istekte çalışır
+# Kategori adına göre açıklamayı döndürür
+def getproductByCategory(request, category):
     try:
-        category_text = data[category]  # Kategori ismini data sözlüğünden al
-        return HttpResponse(category_text)  # Kategoriye göre uygun açıklama mesajını döndür
-    except:  # Eğer kategori bulunamazsa
-        return HttpResponseNotFound("yanlış kategori seçimi yaptınız")  # 404 hata mesajı döndür
+        category_text = data[category]  # Sözlükten kategori açıklaması alınır
+        return HttpResponse(category_text)  # Tarayıcıya açıklama gönderilir
+    except:
+        return HttpResponseNotFound("yanlış kategori seçimi yaptınız")  # Kategori bulunamazsa 404 mesajı döner
