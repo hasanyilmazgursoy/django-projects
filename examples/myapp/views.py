@@ -1,37 +1,39 @@
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound  # HTTP cevapları için gerekli sınıflar
-from django.shortcuts import redirect  # Kullanıcıyı başka bir URL'ye yönlendirmek için
-from django.urls import reverse  # URL'leri name parametresine göre dinamik oluşturmak için
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound  # HTTP cevabı vermek için gerekli sınıflar
+from django.shortcuts import redirect  # Kullanıcıyı başka bir sayfaya yönlendirmek için kullanılır
+from django.urls import reverse  # URL'leri name değerine göre dinamik şekilde oluşturmak için kullanılır
 
-# Kategorilere ait verileri tutan sözlük (kategori ismi => açıklama)
+# Kategorilere karşılık gelen açıklamaları içeren sözlük
 data = {
     "telefon": "telefon kategorisindeki ürünler",
     "bilgisayar": "bilgisayar kategorisindeki ürünler",
     "elektronik": "elektronik kategorisindeki ürünler",
 }
 
-# Not: Alttaki liste şu an kullanılmıyor, sadece örnek amaçlı orada
+# Bu liste örnek amaçlı yazılmış, kullanılmıyor ama yukarıdaki sözlükle aynı kategorileri içeriyor
 ["telefon", "bilgisayar", "elektronik"]
 
 # /products/ veya /products/index adresine istek gelince çalışacak olan fonksiyon
 def index(request):
-    return HttpResponse("index")  # Tarayıcıya "index" yazısı gönderilir
+    list_items = ""  # Liste elemanlarını HTML olarak tutacak değişken
+    category_list = list(data.keys())  # ['telefon', 'bilgisayar', 'elektronik'] gibi liste haline getiriyoruz
 
-# /products/details adresine istek gelince çalışır
-def details(request):
-    return HttpResponse("details")  # Tarayıcıya "details" yazısı gönderilir
+    for category in category_list:
+        redirect_path = reverse('products_by_category', args=[category])  # URL'yi name üzerinden dinamik oluştur
+        list_items += f"<li><a href=\"{redirect_path}\">{category}</a></li>"  # HTML link olarak her kategoriyi ekle
+
+    html = f"<ul>{list_items}</ul>"  # Tüm liste elemanlarını bir <ul> içinde topla
+    return HttpResponse(html)  # Tarayıcıya HTML döndür
 
 # /products/<int:category_id> şeklinde gelen istekte çalışır
 # Sayısal ID'ye göre doğru kategoriye yönlendirir
 def getproductByCategoryId(request, category_id):
-    category_list = list(data.keys())  # Kategori isimlerini listeye çeviriyoruz (örn: ['telefon', 'bilgisayar', 'elektronik'])
+    category_list = list(data.keys())  # ['telefon', 'bilgisayar', 'elektronik']
 
     if category_id > len(category_list) or category_id < 1:
         return HttpResponseNotFound("yanlış kategori seçimi yaptınız")  # Geçersiz ID girildiyse hata döner
 
     category_name = category_list[category_id - 1]  # ID ile doğru kategori ismi eşleştirilir (1-indexli gibi çalışıyor)
-
     redirect_path = reverse('products_by_category', args=[category_name])  # İlgili kategori için URL'yi dinamik oluştur
-
     return redirect(redirect_path)  # Kullanıcıyı o URL'ye yönlendir
 
 # /products/<str:category> şeklinde gelen istekte çalışır
@@ -39,6 +41,6 @@ def getproductByCategoryId(request, category_id):
 def getproductByCategory(request, category):
     try:
         category_text = data[category]  # Sözlükten kategori açıklaması alınır
-        return HttpResponse(category_text)  # Tarayıcıya açıklama gönderilir
+        return HttpResponse(f"<h1>{category_text}</h1>")  # Tarayıcıya açıklama gönderilir
     except:
-        return HttpResponseNotFound("yanlış kategori seçimi yaptınız")  # Kategori bulunamazsa 404 mesajı döner
+        return HttpResponseNotFound(f"<h1>yanlış kategori seçimi</h1>")  # Kategori bulunamazsa 404 mesajı döner

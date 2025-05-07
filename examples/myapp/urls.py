@@ -5,7 +5,6 @@ from . import views  # Aynı dizindeki views.py dosyasını import ediyoruz
 urlpatterns = [
     path('', views.index, name='index'),  # /products/ adresi index fonksiyonuna gider (ana sayfa gibi)
     path('index', views.index, name='index'),  # /products/index adresi de aynı şekilde index fonksiyonuna gider
-    path('details', views.details, name='details'),  # /products/details adresi details fonksiyonunu çalıştırır
 
     # /products/5 gibi bir URL'de category_id parametresi integer olarak alınır
     # Bu URL örneğin: ürün kategorisini ID'ye göre filtrelemek için kullanılabilir
