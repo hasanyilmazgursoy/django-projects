@@ -18,7 +18,8 @@ def index(request):
     category_list = list(data.keys())  # ['telefon', 'bilgisayar', 'elektronik'] gibi liste haline getiriyoruz
 
     for category in category_list:
-        redirect_path = reverse('products_by_category', args=[category])  # URL'yi name üzerinden dinamik oluştur
+        # 'products_by_category' URL'sinin dinamik yolunu 'category' ile oluşturuyoruz
+        redirect_path = reverse('products_by_category', args=[category])
         list_items += f"<li><a href=\"{redirect_path}\">{category}</a></li>"  # HTML link olarak her kategoriyi ekle
 
     html = f"<ul>{list_items}</ul>"  # Tüm liste elemanlarını bir <ul> içinde topla
@@ -29,18 +30,24 @@ def index(request):
 def getproductByCategoryId(request, category_id):
     category_list = list(data.keys())  # ['telefon', 'bilgisayar', 'elektronik']
 
+    # Eğer ID, geçerli kategoriler arasında değilse hata döndür
     if category_id > len(category_list) or category_id < 1:
         return HttpResponseNotFound("yanlış kategori seçimi yaptınız")  # Geçersiz ID girildiyse hata döner
 
     category_name = category_list[category_id - 1]  # ID ile doğru kategori ismi eşleştirilir (1-indexli gibi çalışıyor)
-    redirect_path = reverse('products_by_category', args=[category_name])  # İlgili kategori için URL'yi dinamik oluştur
+    # İlgili kategoriye ait URL'yi 'category_name' ile oluşturuyoruz
+    redirect_path = reverse('products_by_category', args=[category_name])
     return redirect(redirect_path)  # Kullanıcıyı o URL'ye yönlendir
 
 # /products/<str:category> şeklinde gelen istekte çalışır
 # Kategori adına göre açıklamayı döndürür
 def getproductByCategory(request, category):
     try:
-        category_text = data[category]  # Sözlükten kategori açıklaması alınır
-        return HttpResponse(f"<h1>{category_text}</h1>")  # Tarayıcıya açıklama gönderilir
+        # Kategori adıyla açıklamayı sözlükten alıyoruz
+        category_text = data[category]
+        # Kategori ve açıklama ile HTML döndürüyoruz
+        return render(request, "myapp/products.html", {"category": category, "category_text": category_text})
+
     except:
-        return HttpResponseNotFound(f"<h1>yanlış kategori seçimi</h1>")  # Kategori bulunamazsa 404 mesajı döner
+        # Eğer kategori bulunamazsa, 404 hata mesajı döndür
+        return HttpResponseNotFound(f"<h1>yanlış kategori seçimi</h1>")
