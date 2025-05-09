@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound  # HTTP cevabı vermek için gerekli sınıflar
-from django.shortcuts import redirect  # Kullanıcıyı başka bir sayfaya yönlendirmek için kullanılır
+from django.shortcuts import redirect, render  # Kullanıcıyı başka bir sayfaya yönlendirmek için kullanılır
 from django.urls import reverse  # URL'leri name değerine göre dinamik şekilde oluşturmak için kullanılır
 
 # Kategorilere karşılık gelen açıklamaları içeren sözlük
@@ -22,7 +22,7 @@ def index(request):
         list_items += f"<li><a href=\"{redirect_path}\">{category}</a></li>"  # HTML link olarak her kategoriyi ekle
 
     html = f"<ul>{list_items}</ul>"  # Tüm liste elemanlarını bir <ul> içinde topla
-    return HttpResponse(html)  # Tarayıcıya HTML döndür
+    return render(request, 'myapp/index.html')  # Tarayıcıya HTML döndür
 
 # /products/<int:category_id> şeklinde gelen istekte çalışır
 # Sayısal ID'ye göre doğru kategoriye yönlendirir
