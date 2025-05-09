@@ -14,15 +14,12 @@ data = {
 
 # /products/ veya /products/index adresine istek gelince çalışacak olan fonksiyon
 def index(request):
-    list_items = ""  # Liste elemanlarını HTML olarak tutacak değişken
+
     category_list = list(data.keys())  # ['telefon', 'bilgisayar', 'elektronik'] gibi liste haline getiriyoruz
 
-    for category in category_list:
-        # 'products_by_category' URL'sinin dinamik yolunu 'category' ile oluşturuyoruz
-        redirect_path = reverse('products_by_category', args=[category])
-        list_items += f"<li><a href=\"{redirect_path}\">{category}</a></li>"  # HTML link olarak her kategoriyi ekle
+    return render (request, 'myapp/index.html', {"category_list": category_list})
 
-    html = f"<ul>{list_items}</ul>"  # Tüm liste elemanlarını bir <ul> içinde topla
+
     return render(request, 'myapp/index.html')  # Tarayıcıya HTML döndür
 
 # /products/<int:category_id> şeklinde gelen istekte çalışır
