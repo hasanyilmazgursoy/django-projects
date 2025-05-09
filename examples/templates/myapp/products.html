@@ -1,27 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Karakter seti belirtir. Türkçe karakterler ve özel karakterlerin düzgün görüntülenmesi için gerekli -->
     <meta charset="UTF-8">
-
-    <!-- Sayfa responsive (duyarlı) olacak şekilde ayarlanır, farklı cihazlarda düzgün görüntülenmesi sağlanır -->
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-
-    <!-- Internet Explorer tarayıcılarında uyumluluğu sağlamak için eski sürüm ayarları -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <!-- Sayfanın başlığını dinamik olarak category değişkenine göre ayarlar -->
     <title>{{ category }}</title>
 </head>
 <body>
-    <!-- Sayfa başlığını dinamik olarak category değişkenine göre görüntüler -->
     <h1>{{ category }}</h1>
 
-    <!-- category_text değişkenini burada parantez içerisinde yazdırır. Bu genellikle açıklamalar veya metinler için kullanılır -->
-    <p>
-        {{ category_text }}
-    </p>
+    <div>
+        {% if products %}
+            {% for product in products %}
+                {{ product }}
+            {% endfor %}
+        {% else %}
+            <div>No products found.</div>
+        {% endif %}
+    </div>
 
 </body>
 </html>

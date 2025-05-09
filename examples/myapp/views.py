@@ -4,9 +4,9 @@ from django.urls import reverse  # URL'leri name değerine göre dinamik şekild
 
 # Kategorilere karşılık gelen açıklamaları içeren sözlük
 data = {
-    "telefon": "telefon kategorisindeki ürünler",
-    "bilgisayar": "bilgisayar kategorisindeki ürünler",
-    "elektronik": "elektronik kategorisindeki ürünler",
+    "telefon": ["samsung s20", "iphone 12", "xiaomi mi 11"],  # Telefon kategorisindeki ürünler
+    "bilgisayar": ["dell xps 13", "macbook pro", "lenovo thinkpad"],  # Bilgisayar kategorisindeki ürünler
+    "elektronik": [ "radyo", "buzdolabı"],  # Elektronik kategorisindeki ürünler
 }
 
 # Bu liste örnek amaçlı yazılmış, kullanılmıyor ama yukarıdaki sözlükle aynı kategorileri içeriyor
@@ -41,9 +41,9 @@ def getproductByCategoryId(request, category_id):
 def getproductByCategory(request, category):
     try:
         # Kategori adıyla açıklamayı sözlükten alıyoruz
-        category_text = data[category]
+        products = data[category]
         # Kategori ve açıklama ile HTML döndürüyoruz
-        return render(request, "myapp/products.html", {"category": category, "category_text": category_text})
+        return render(request, "myapp/products.html", {"category": category, "products": products})
 
     except:
         # Eğer kategori bulunamazsa, 404 hata mesajı döndür
