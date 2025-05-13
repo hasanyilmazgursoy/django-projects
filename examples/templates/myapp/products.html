@@ -1,24 +1,35 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ category }}</title>
-</head>
-<body>
-    <h1>{{ category }}</h1>
+{% extends "layout.html" %}
 
+
+
+{% block page_title %}
+
+{{ category }}
+
+{% endblock %}
+
+{% block content %}
+
+
+    <h1>{{ category|title }}</h1> <!-- Kategori adını başlık gibi yazar (örneğin: "telefon" -> "Telefon") -->
+
+    <!-- Eğer products listesi varsa aşağıyı çalıştırır -->
+    {% if products %}
     <div>
-        {% if products %}
-            {% for product in products %}
-                {{ product }}
-            {% endfor %}
-        {% else %}
-            <div>No products found.</div>
-        {% endif %}
+        <p>Toplam ürün: {{ products|length }}</p> <!-- Ürün sayısını gösterir -->
+
+        <!-- products listesi üzerinde döner -->
+        {% for product in products %}
+            <div class="product">
+                <!-- Ürün ismini büyük harfli yazdırır -->
+                <strong>{{ forloop.counter }}.</strong> {{ product|upper }}
+            </div>
+        {% endfor %}
     </div>
 
-</body>
-</html>
+    <!-- Eğer products listesi boşsa burası çalışır -->
+    {% else %}
+        <div>No products found.</div>
+    {% endif %}
+
+{% endblock %} <!-- İçerik burada dinamik olarak değişecek -->
