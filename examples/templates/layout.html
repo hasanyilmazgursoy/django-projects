@@ -9,8 +9,12 @@
 </head>
 <body>
 
-    {% block content %} {% endblock %} <!-- İçerik burada dinamik olarak değişecek -->
+    {% include 'partials/_header.html' %}
 
+
+
+    {% block content %} {% endblock %} <!-- İçerik burada dinamik olarak değişecek -->
+    {% include 'partials/_footer.html' %}
 
 
 </body>

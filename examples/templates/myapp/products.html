@@ -29,7 +29,7 @@
 
     <!-- Eğer products listesi boşsa burası çalışır -->
     {% else %}
-        <div>No products found.</div>
+        {% include 'partials/_no_product.html' %}
     {% endif %}
 
 {% endblock %} <!-- İçerik burada dinamik olarak değişecek -->
