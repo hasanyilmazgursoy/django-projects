@@ -13,7 +13,7 @@ data = {
 def index(request):
     category_list = list(data.keys())  # ['telefon', 'bilgisayar', 'elektronik']
 
-    return render(request, 'myapp/index.html', {"category_list": category_list})
+    return render(request, 'index.html', {"category_list": category_list})
 
 # /products/<int:category_id> şeklinde gelen istekte çalışır
 def getproductByCategoryId(request, category_id):
@@ -36,7 +36,7 @@ def getproductByCategory(request, category):
     # Veriyi bulmaya çalış
     if category in data:
         products = data[category]
-        return render(request, "myapp/products.html", {"category": category, "products": products})
+        return render(request, "products.html", {"category": category, "products": products})
     else:
         # Eğer kategori bulunamazsa, 404 hata mesajı döndür
         return HttpResponseNotFound(f"<h1>Yanlış kategori seçimi</h1>")
